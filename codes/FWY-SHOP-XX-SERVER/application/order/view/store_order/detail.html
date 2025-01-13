@@ -1,0 +1,102 @@
+<div style="padding: 20px; background-color: #F2F2F2;">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">订单信息</div>
+                <div class="layui-card-body">
+                    <div class="layui-col-md6">订单号：{$data['order_no']}</div>
+                    <div class="layui-col-md6">订单状态：
+                        {eq name='vo.status' value='0'}<span class="layui-badge layui-bg-orange margin-left-5">待付款</span>{/eq}
+                        {eq name='vo.status' value='1'}<span class="layui-badge layui-bg-black margin-left-5">待发货</span>{/eq}
+                        {eq name='vo.status' value='2'}<span class="layui-badge layui-bg-green margin-left-5">已发货</span>{/eq}
+                        {eq name='vo.status' value='3'}<span class="layui-badge layui-bg-blue margin-left-5">已收货待评价</span>{/eq}
+                        {eq name='vo.status' value='4'}<span class="layui-badge layui-bg-blue margin-left-5">已完成</span>{/eq}
+                        {eq name='vo.status' value='9'}<span class="layui-badge layui-bg-blue margin-left-5">已取消</span>{/eq}
+                    </div><hr />
+                    <div class="layui-col-md6">商品总价：{$data['price_goods']|default='0'}</div><hr />
+                    <div class="layui-col-md6">需支付金额：{$data['price_total']|default='0'}</div>
+                    <div class="layui-col-md6">实际支付金额：{$data['price_total']|default='0'}</div><hr />
+                    <div class="layui-col-md6">优惠券抵扣金额：{$data['coupon_cash']|default='0'}</div>
+                    <hr />
+                    <div class="layui-col-md6">支付方式：
+                        {eq name='vo.pay_type' value='0'}<span class="layui-badge layui-bg-green margin-left-5">未支付</span>{/eq}
+                        {eq name='vo.pay_type' value='1'}<span class="layui-badge layui-bg-green margin-left-5">微信</span>{/eq}
+                        {eq name='vo.pay_type' value='2'}<span class="layui-badge layui-bg-blue margin-left-5">余额</span>{/eq}
+                        {eq name='vo.pay_type' value='3'}<span class="layui-badge layui-bg-orange margin-left-5">支付宝</span>{/eq}
+                    </div>
+                    <hr />
+                    <div class="layui-col-md6">下单时间：{$data.create_at|default='--'}</div>
+                    <div class="layui-col-md6">
+                        支付时间：{$vo.pay_at|default='--'}
+                    </div>
+                    <hr />
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">收货信息</div>
+                <div class="layui-card-body">
+                    <div class="layui-col-md6">收货人姓名：{$data.user_name|default='--'}</div>
+                    <div class="layui-col-md6">收货人手机：{$data.phone|default='--'}</div><hr />
+                    <div class="layui-col-md6">地址：{$vo.pro_name|default='--'}{$vo.city_name}{$vo.county_name}{$vo.street_name}{$vo.add_detail}{$vo.add_detail}</div><hr />
+                    <div class="layui-col-md6">发货状态：{eq name='vo.express_state' value='0'}
+                        <span class="layui-badge layui-bg-black">未发货</span>
+                        {else}
+                        <span class="layui-badge layui-bg-blue">{$vo.express_company_title|default='--'}</span>
+                        <span class="layui-badge layui-bg-gray margin-left-5">{$vo.express_send_no|default='--'}</span>
+                        {/eq}
+                        {if $vo.status eq 3 || $vo.status eq -3 || $vo.pay_type eq 'offline'}
+                        <a class=" margin-left-5" data-title="填写订单信息" data-modal="{:url('express')}?id={$vo.id}">填写发货信息</a>
+                        {elseif $vo.status eq 4}
+                        <a class=" margin-left-5" data-title="修改发货信息" data-modal="{:url('express')}?id={$vo.id}">修改发货信息</a>
+                        {/if}
+                    </div>
+                    <div class="layui-col-md6">发货时间：{$vo.express_send_at|format_datetime}</div>
+                    <hr />
+
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">商品信息</div>
+                <div class="layui-card-body">
+                    <table class="layui-table margin-top-10" lay-skin="line">
+                        {notempty name='order_item'}
+                        <thead>
+                        <tr>
+                            <th class='text-left nowrap'>商品</th>
+                            <th class='text-left nowrap'>规格</th>
+                            <th class='text-left nowrap'>价格</th>
+                            <th class='text-left nowrap'>数量</th>
+                        </tr>
+                        </thead>
+                        {/notempty}
+                        <tbody>
+                        {foreach $order_item as $key=>$iv}
+                        <tr>
+                            <td class='text-left nowrap'>
+                                <div class="inline-block" style="max-width: 210px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">
+                                    <img data-tips-image style="width:20px;height:20px;vertical-align:top" src="{$iv.cover}" class="margin-right-5"> {$iv.name}
+                                </div>
+                            </td>
+                            <td class='text-left nowrap' style="max-width: 210px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">
+                                {$iv.goods_spec|default='-'}
+                            </td>
+                            <td class='text-left'>
+                                {$iv.sell_price|default='0'}
+                            </td>
+                            <td class='text-left'>
+                                {$iv.num|default='0'}
+                            </td>
+                        </tr>
+                        {/foreach}
+                        </tbody>
+                    </table>
+                    {empty name='order_item'}<span class="notdata">没有记录哦</span>{else}{$pagehtml|raw|default=''}{/empty}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

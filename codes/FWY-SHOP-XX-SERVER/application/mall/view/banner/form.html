@@ -1,0 +1,44 @@
+<style>
+    .uploadimage{
+        width: 10pc !important;
+    }
+</style>
+<div class="think-box-shadow">
+    <form class="layui-form layui-card" action="{:request()->url()}" data-auto="true" method="post" autocomplete="off">
+        <div class="layui-card-body">
+
+            <div class="layui-form-item">
+                <label class="layui-form-label label-required">名称</label>
+                <div class="layui-input-block">
+                    <input name="name" maxlength="20"  value='{$vo.name|default=""}' placeholder="请输入名称" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label label-required">图片</label>
+                <div class="layui-input-block">
+                    <input name="cover" type="hidden" value="{$vo.cover|default=''}">
+                    &nbsp; &nbsp;<span style="margin-right: 20px">建议尺寸宽700px 高330px </span>
+                </div>
+
+            </div>
+
+
+            <div class="layui-form-item">
+                <label class="layui-form-label label-required">排序</label>
+                <div class="layui-input-block">
+                    <input type="number" name="sort"  value='{$vo.sort|default=""}' placeholder="请输入排序号" class="layui-input">
+                </div>
+            </div>
+            {notempty name='vo.id'}<input type='hidden' value='{$vo.id}' name='id'>{/notempty}
+            <div class="layui-form-item text-center">
+                <button class="layui-btn" type='submit'>保 存</button>
+                <button class="layui-btn layui-btn-danger" type='button' data-confirm="确定取消编辑吗？" data-close>取消编辑</button>
+            </div>
+        </div>
+    </form>
+    <script>
+        window.form.render();
+        $('[name="cover"]').uploadOneImage();
+    </script>
+</div>

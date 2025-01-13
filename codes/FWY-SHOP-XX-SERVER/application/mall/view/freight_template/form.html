@@ -1,0 +1,312 @@
+{extend name='admin@main'}
+
+{block name="content"}
+<div class="think-box-shadow" >
+    <form class="layui-form layui-card" action="{:request()->url()}" data-auto="true" method="post" autocomplete="off">
+        <div class="layui-card-body" style="width: 85%">
+
+            <div class="layui-form-item">
+                <label class="layui-form-label label-required">模板名称</label>
+                <div class="layui-input-block">
+                    <input name="name" maxlength="20"  value='{$vo.name|default=""}' placeholder="请输入商品名称" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label label-required">首件</label>
+                <div class="layui-input-block">
+                    <div class="layui-input-inline"   style="width: 50%" >
+                        <input type="number" name="base_num"    value='{$vo.base_num|default=""}' placeholder="请输入件数量" class="layui-input">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">X件(含)内以首件费用计算</div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label label-required">首件费用</label>
+                <div class="layui-input-block" >
+                    <input type="number" name="base_price"  style="width: 50%"   value='{$vo.base_price|default=""}' placeholder="请输入首件费用" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label label-required">续件费用</label>
+                <div class="layui-input-block" >
+                    <div class="layui-input-inline"   style="width: 50%" >
+                        <input type="number" name="base_keep_price"   value='{$vo.base_keep_price|default=""}' placeholder="请输入续件费用" class="layui-input">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">每续加1件额外增加的运费</div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label label-required">不发货地区</label>
+                <div class="layui-input-block">
+                    <table class="layui-table margin-top-10" lay-skin="line" style="width: 100% ; border-width: 1px 1px 1px !important;">
+                        <thead>
+                        <tr>
+                            <th class='text-left nowrap' style="width: 90% ; border-width: 1px 1px 1px !important;">地区</th>
+                            <th class='text-left nowrap' style=" border-width: 1px 1px 1px !important;">操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="no_html">
+                        <tr>
+                            <input type="hidden" name="no_express" class="area_input" value='{$vo.no_express|default=""}' />
+                            <td class='text-left area_part'  style=" border-width: 1px 1px 1px !important;">
+
+                            </td>
+                            <td class='text-left'  style=" border-width: 1px 1px 1px !important;"><span class='edit_area' >编辑</span></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label label-required">自定义分组</label>
+                <div class="layui-input-block">
+                    <table class="layui-table margin-top-10" lay-skin="line">
+                        <thead>
+                        <tr>
+                            <th class='text-left nowrap' style="width: 60%">地区</th>
+                            <th class='text-left nowrap'  style=" border-width: 1px 1px 1px !important;">首件（个）</th>
+                            <th class='text-left nowrap'  style=" border-width: 1px 1px 1px !important;">运费（元）</th>
+                            <th class='text-left nowrap'  style=" border-width: 1px 1px 1px !important;">续件费（元）</th>
+                            <th class='text-left nowrap'  style="width: 10%; border-width: 1px 1px 1px !important;">操作</th>
+                        </tr>
+                        </thead>
+                        <tbody class="mud_html">
+                            {if isset($vo.custom) && $vo.custom}
+                            {foreach :json_decode($vo.custom,true) as $k=>$v}
+                            <tr>
+                                <input type="hidden" name="express[]" class="area_input" value="{$v.express|default=0}" />
+                                <td class='text-left area_part'></td>
+                                <td class='text-left '  style=" border-width: 1px 1px 1px !important;">
+                                    <input  class="layui-input" type="number" step="1" min="0"  name="first_num[]"   value="{$v.first_num|default=0}" />
+                                </td>
+                                <td class='text-left '  style=" border-width: 1px 1px 1px !important;">
+                                    <input  class="layui-input" type="number" step="0.01" min="0"  name="first_price[]"  value="{$v.first_price|default=0}" />
+                                </td>
+                                <td class='text-left '  style=" border-width: 1px 1px 1px !important;">
+                                    <input  class="layui-input" type="number" step="0.01" min="0"  name="keep_price[]"   value="{$v.keep_price|default=0}" />
+                                </td>
+                                <td class='text-left '  style=" border-width: 1px 1px 1px !important;">
+                                    <span class='edit_area' >编 辑</span>  &nbsp;&nbsp;&nbsp;
+                                    {if $k == 0}
+                                    <span class="add_mud">添加分组</span>
+                                    {else}
+                                    <span class="del_mud">删 除</span>
+                                    {/if}
+                                </td>
+                            </tr>
+                            {/foreach}
+                            {else}
+                            <tr>
+                                <input type="hidden" name="express[]" class="area_input" value="" />
+                                <td class='text-left area_part'></td>
+                                <td class='text-left '  style=" border-width: 1px 1px 1px !important;">
+                                    <input  class="layui-input" type="number" step="1" min="0"  name="first_num[]"   value="" />
+                                </td>
+                                <td class='text-left '  style=" border-width: 1px 1px 1px !important;">
+                                    <input  class="layui-input" type="number" step="0.01" min="0"  name="first_price[]"  value="" />
+                                </td>
+                                <td class='text-left '  style=" border-width: 1px 1px 1px !important;">
+                                    <input  class="layui-input" type="number" step="0.01" min="0"  name="keep_price[]"   value="" />
+                                </td>
+                                <td class='text-left '  style=" border-width: 1px 1px 1px !important;">
+                                    <span class='edit_area' >编 辑</span>  &nbsp;&nbsp;&nbsp;<span class="add_mud">添加分组</span>
+                                </td>
+                            </tr>
+                            {/if}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+            {notempty name='vo.id'}<input type='hidden' value='{$vo.id}' name='id'>{/notempty}
+            <div class="layui-form-item text-center">
+                <button class="layui-btn" type='submit'>保 存</button>
+                <button class="layui-btn layui-btn-danger" type='button' onclick="history.go(-1)" data-close>返回</button>
+            </div>
+        </div>
+    </form>
+    <input type="hidden" id="edit_index" value="0"/>
+    <div style="display: none" id="area_div">
+    </div>
+    <script>
+        form.render()
+        var all_area = {:json_encode($city_area)};
+
+        $(document).on('click','.edit_area',function () {
+            var edit_index = $('.edit_area').index(this);
+            console.log(edit_index);
+            $("#edit_index").val(edit_index);
+            var sel_ids = $(".area_input").eq(edit_index).val().split(',');
+            var  html =''
+            html += '<div class="think-box-shadow" id="city_area">'
+            $.each(all_area,function (k,v) {
+                var  is_sel_sheng = $.inArray( v.id.toString(),sel_ids);
+                html += '<table class="layui-table margin-top-5" lay-skin="line">'
+                html +=     '<thead>'
+                html +=         '<tr>'
+                if(is_sel_sheng >=0 ){
+                    html +=             '<th class="text-left nowrap list-table-check-td think-checkbox"><input class="sheng_class" value="'+v.id+'" checked type="checkbox"> <span class="sheng_span" style="color: #1E9FFF">'+v.name+'</span></th>'
+                } else{
+                    html +=             '<th class="text-left nowrap list-table-check-td think-checkbox"><input class="sheng_class" value="'+v.id+'" type="checkbox"> <span class="sheng_span" style="color: #1E9FFF">'+v.name+'</span></th>'
+                }
+                html +=         '</tr>'
+                html +=     '</thead>'
+                html +=     '<tbody>'
+                html +=         '<tr>'
+                html +=             '<td class="text-left  list-table-check-td think-checkbox" style="padding-left: 40px !important">'
+                $.each(v.children,function (rk,rv) {
+                    var  is_sel_shi = $.inArray(rv.id.toString(),sel_ids);
+                    if(is_sel_shi>= 0) {
+                        html +=                 '<div  style="float:left;word-wrap: normal;margin-right:10px"><input class="shi_class" value="'+rv.id+'" checked type="checkbox"><span class="shi_span"> '+rv.name+'</span></div>'
+                    }else{
+                        html +=                 '<div  style="float:left;word-wrap: normal;margin-right:10px"><input class="shi_class" value="'+rv.id+'" type="checkbox"><span class="shi_span"> '+rv.name+'</span></div>'
+                    }
+                })
+                html +=             '</td>'
+                html +=         '</tr>'
+                html +=     '</tbody>'
+                html +=  '</table>'
+            })
+            html += '<div class="layui-form-item text-center">'
+            html +=     '<button class="layui-btn" id="save_area">保 存</button>'
+            html += '</div>'
+
+            html += '</div>'
+
+            layer.open({
+                type: 1,
+                title: false,
+                area: ['80%', '80%'],
+                shade: [0.3, 'rgb(14, 16, 22)'],
+                skin: 'demo-class',
+                content: html
+            });
+           layer.render()
+        });
+
+
+        $.each($(".area_input"),function (k,v) {
+            var has_sel_ids = $(".area_input").eq(k).val().split(',');
+            console.log(has_sel_ids);
+            var aht = '';
+            $.each(all_area,function (ak,av) {
+                var  sel_sheng = $.inArray( av.id.toString(),has_sel_ids);
+                if(sel_sheng >= 0){
+                    console.log(av.id.toString())
+                    aht += '<span style="color: #1E9FFF">'+av.name+"</span>" ;
+                    aht += '( ';
+                    $.each(av.children,function (rk,rv) {
+                        if( $.inArray( rv.id.toString(),has_sel_ids) >=0){
+                            aht += rv.name +'  ';
+                        }
+                    })
+                    aht += ')、 ';
+                }
+            })
+            $(".area_part").eq(k).html(aht);
+           form.render()
+        })
+
+
+        $(document).on('click','.add_mud',function () {
+             var mh = '';
+             mh += '<tr>';
+             mh +=  '<input type="hidden" name="express[]" class="area_input" value="" />';
+             mh +=  '<td class=\'text-left area_part\'></td>';
+             mh +=  '<td class=\'text-left \'  style=" border-width: 1px 1px 1px !important;">';
+             mh +=  '     <input  class="layui-input" type="number" step="1" min="0"  name="first_num[]"   value="0" />';
+             mh +=  '</td>';
+             mh +=  '<td class=\'text-left \'  style=" border-width: 1px 1px 1px !important;">';
+             mh +=  '     <input  class="layui-input" type="number" step="1" min="0"  name="first_price[]"   value="0" />';
+             mh +=  '</td>';
+             mh +=  '<td class=\'text-left \'  style=" border-width: 1px 1px 1px !important;">';
+             mh +=  '     <input  class="layui-input" type="number" step="1" min="0"  name="keep_price[]"   value="0" />';
+             mh +=  '</td>';
+             mh +=  '<td class=\'text-left \'  style=" border-width: 1px 1px 1px !important;">';
+             mh +=       '<span class=\'edit_area\' >编 辑</span>&nbsp;&nbsp;   &nbsp;&nbsp;<span class="del_mud">删 除</span>';
+             mh +=  '</td>';
+             mh += '</tr>';
+             $(".mud_html").append(mh)
+             layer.render()
+        })
+        $(document).on('click','.del_mud',function () {
+            $(this).parents('tr').remove();
+            layer.render()
+        })
+
+        $(document).on('click','.sheng_class',function () {
+            if($(this).is(':checked')){
+                $(this).parents('.layui-table').find('.shi_class').prop('checked',true)
+            }else{
+                $(this).parents('.layui-table').find('.shi_class').prop('checked',false)
+            }
+           form.render()
+        })
+
+        $(document).on('click','.shi_class',function () {
+            if($(this).is(':checked')){
+                $(this).parents('.layui-table').find('.sheng_class').prop('checked',true)
+            }else{
+                var sel_num = 0;
+                var box = $(this).parents('.layui-table').find('.shi_class');
+                $.each(box,function (bk,bv) {
+                    if(box.eq(bk).is(':checked')) sel_num = 1;
+                })
+               if(sel_num) {
+                   $(this).parents('.layui-table').find('.sheng_class').prop('checked',true)
+               }else{
+                   $(this).parents('.layui-table').find('.sheng_class').prop('checked',false)
+               }
+
+            }
+           form.render()
+        })
+
+        $(document).on('click','.sheng_span',function () {
+            $(this).siblings('.sheng_class').click();
+        })
+
+        $(document).on('click','.shi_span',function () {
+            $(this).siblings('.shi_class').click();
+        })
+        // 保存所選的地區
+        $(document).on('click','#save_area',function () {
+            var sel_area = '';
+            var sel_id = [];
+            $.each($("#city_area .sheng_class"),function (sk,sv) {
+                if($("#city_area .sheng_class").eq(sk).is(":checked"))
+                {
+                    sel_id.push($("#city_area .sheng_class").eq(sk).val());
+                    var sh_name = $("#city_area .sheng_class").eq(sk).siblings('.sheng_span').text();
+                    sel_area += '<span style="color: #1E9FFF">'+sh_name+"</span>" ;
+                    sel_area += '( ';
+                    var shi_input = $("#city_area .sheng_class").eq(sk).parents('.layui-table').find('.shi_class');
+                    $.each(shi_input,function (ck,cv) {
+                        if(shi_input.eq(ck).is(":checked")) {
+                            sel_id.push(shi_input.eq(ck).val());
+                            var city_name = shi_input.eq(ck).siblings('.shi_span').text();
+                            sel_area += city_name+'  ';
+                        }
+                    })
+                    sel_area += ')、';
+                }
+            })
+
+            $(".area_part").eq($("#edit_index").val()).html(sel_area);
+            $(".area_input").eq($("#edit_index").val()).val(sel_id.join(','));
+            layer.closeAll();
+           form.render()
+        })
+
+    </script>
+</div>
+
+{/block}
+
+

@@ -1,0 +1,92 @@
+{extend name='admin@main'}
+{block name="content"}
+<div class="think-box-shadow">
+    {include file='app_order/index_search'}
+    <table class="layui-table margin-top-10" lay-skin="line">
+        {notempty name='list'}
+        <thead>
+        <tr>
+            <th class='text-left nowrap'>用户信息</th>
+            <th class='text-left nowrap'>预约商品</th>
+            <th class='text-left nowrap'>预约信息</th>
+            <th class='text-left nowrap'>预约地址</th>
+            <th class="text-left nowrap">预约单号</th>
+            <th class="text-left nowrap">预约状态</th>
+            <th class="text-left nowrap">操作</th>
+        </tr>
+        </thead>
+        {/notempty}
+        <tbody>
+        {foreach $list as $key=>$vo}
+        <tr>
+            <td class='text-left nowrap'>
+                <img data-tips-image style="width:50px;height:50px" src="{$vo.headimg|default=''}" class="margin-right-5 text-top">
+                <div class="inline-block">
+                    用户ID：{$vo.id|default='--'}<br><br>
+                    用户昵称：{$vo.u_name|default='--'}
+                </div>
+            </td>
+
+            <td class='text-left nowrap'>
+                <img data-tips-image style="width:50px;height:50px" src="{$vo.goods_cover|default=''}" class="margin-right-5 text-top">
+                <div class="inline-block">
+                    商品ID：{$vo.id|default='--'}<br>
+                    商品名称：{$vo.goods_name|default='--'}<br>
+                    商品规格：{$vo.goods_spec|default='--'}
+                </div>
+            </td>
+
+
+            <td class='text-left nowrap'>
+                <div class="inline-block">
+                    联系人：{$vo.user_name|default='--'}<br>
+                    预约号：{$vo.code|default='--'}<br>
+                    手机号：{$vo.phone|default='--'}
+                </div>
+            </td>
+            <td class='text-left nowrap'>
+                <div class="inline-block">
+                    预约地址：{$vo.pro_name|default='--'}{$vo.city_name|default='--'}{$vo.county_name|default='--'}<br>
+                    地址详情：{$vo.add_detail|default='--'}
+                </div>
+            </td>
+            <td class='text-left nowrap'>{$vo.order_no}</td>
+            <td class='text-left nowrap'>
+                {eq name='vo.status' value='0'}<span class="layui-badge layui-bg-orange margin-left-5">预约中</span>{/eq}
+                {eq name='vo.status' value='1'}<span class="layui-badge layui-bg-green margin-left-5">预约完成</span>{/eq}
+                {eq name='vo.status' value='9'}<span class="layui-badge layui-bg-black margin-left-5">已取消</span>{/eq}
+            </td>
+            <td class='text-left nowrap'>
+                <a class="layui-btn layui-btn-sm layui-btn-danger" data-confirm="确定要删除该记录吗?" data-action="{:url('remove')}" data-value="id#{$vo.id}">删 除</a>
+                {if $vo.status == 0}
+                    <span class="layui-btn layui-btn-sm layui-btn-warm" onclick="btn_confirm('订单完成','complete','{$vo.id}');">订单完成</span>
+                {/if}
+            </td>
+        </tr>
+        {/foreach}
+        </tbody>
+    </table>
+    {empty name='list'}<span class="notdata">没有记录哦</span>{else}{$pagehtml|raw|default=''}{/empty}
+</div>
+<script>
+    function btn_confirm(msg,fun,id) {
+        layer.confirm('请确定是否'+msg, {btn: ['确定', '取消'], title: "提示"}, function () {
+            var url = "/order/app_order/"+fun;
+            layer.closeAll();
+            $.ajax({
+                type: "post",
+                url: url,
+                data: {id:id},
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    layer.msg(data.info);
+                    setTimeout(function () {
+                        window.location.reload();
+                    },1000)
+                }
+            });
+        });
+    }
+</script>
+{/block}

@@ -1,0 +1,97 @@
+<div class="think-box-shadow">
+    <form class="layui-form layui-card" action="{:request()->url()}" data-auto="true" method="post" autocomplete="off">
+        <div class="layui-card-body">
+            <div class="layui-form-item">
+                <label class="layui-form-label label-required">等级名称</label>
+                <div class="layui-input-block">
+                    <input name="name" maxlength="20"  value='{$vo.name|default=""}' placeholder="请输入等级名称" class="layui-input">
+                </div>
+            </div>
+
+
+            <div class="layui-form-item">
+                <label class="layui-form-label label-required">等级描述</label>
+                <div class="layui-input-block">
+                    <input name="desc" maxlength="20"  value='{$vo.desc|default=""}' placeholder="请输入等级描述" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label label-required">LOGO</label>
+                <div class="layui-input-block">
+                    <input name="logo" type="hidden" value="{$vo.logo|default=''}">
+                </div>
+            </div>
+
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">价格设置</label>
+                <div class="layui-input-block">
+                    <table class="layui-table param">
+                        <thead>
+                        <tr>
+                            <th class="text-left" width="40%">标题</th>
+                            <th class="text-center" width="20%">时间(月)</th>
+                            <th class="text-center" width="20%">价格（元）</th>
+                            <th class="text-center">
+                                <a class="layui-btn layui-btn-sm layui-btn-normal"  onclick="add_param()">添 加</a>
+                            </th>
+                        </tr>
+                        </thead>
+                        <!--{foreach $price as $param}-->
+                        <tr class="param_index">
+                            <td class="padding-0" >
+                                <input class="layui-input  border-0" name="title[]" value="{$param.title|default=''}">
+                            </td>
+                            <td class="padding-0">
+                                <input class="layui-input  border-0"  type="number" step="1" name="time[]" value="{$param.time|default=''}">
+                            </td>
+                            <td class="padding-0">
+                                <input class="layui-input  border-0"   type="number" step="1" name="price[]" value="{$param.price|default=''}">
+                            </td>
+                            <td class="padding-0 text-center">
+                                <a class="layui-btn layui-btn-sm layui-btn-danger del">删 除</a>
+                            </td>
+                        </tr>
+                        <!--{/foreach}-->
+                    </table>
+                </div>
+            </div>
+
+            {notempty name='vo.id'}<input type='hidden' value='{$vo.id}' name='id'>{/notempty}
+            <div class="layui-form-item text-center">
+                <button class="layui-btn" type='submit'>保 存</button>
+                <button class="layui-btn layui-btn-danger" type='button' data-confirm="确定取消编辑吗？" data-close>取消编辑</button>
+            </div>
+        </div>
+    </form>
+    <script>
+        window.form.render();
+        $('[name="logo"]').uploadOneImage();
+        var html = '<tr class="param_index">\n' +
+            '                        <td class="padding-0" >\n' +
+            '                            <input class="layui-input  border-0" name="title[]" value="">\n' +
+            '                        </td>\n' +
+            '                        <td class="padding-0">\n' +
+            '                            <input class="layui-input  border-0" name="time[]" value="">\n' +
+            '                        </td>\n' +
+            '                        <td class="padding-0">\n' +
+            '                            <input class="layui-input  border-0" name="price[]" value="">\n' +
+            '                        </td>\n' +
+            '                        <td class="padding-0 text-center">\n' +
+            '                            <a class="layui-btn layui-btn-sm layui-btn-danger del"  >删 除</a>\n' +
+            '                        </td>\n' +
+            '                    </tr>';
+        function add_param() {
+            $(".param").append(html);
+            layer.render();
+        }
+
+        // 删除设置
+        $(document).on('click',".del",function (){
+            var index= $(".del").index(this);
+            $(".param_index").eq(index).remove();
+            layer.render();
+        })
+    </script>
+</div>

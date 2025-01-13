@@ -1,0 +1,35 @@
+{extend name='admin@main'}
+{block name="content"}
+<div class="think-box-shadow">
+    {include file='level_order/index_search'}
+    <table class="layui-table margin-top-10" lay-skin="line">
+        {notempty name='list'}
+        <thead>
+        <tr>
+            <th class='text-left nowrap'>用户名</th>
+            <th class='text-left nowrap'>手机号</th>
+            <th class='text-left nowrap'>订单金额</th>
+            <th class='text-left nowrap'>会员</th>
+            <th class='text-left nowrap'>时间（月）</th>
+            <th class='text-left nowrap'>订单号</th>
+            <th class="text-left nowrap">添加时间</th>
+        </tr>
+        </thead>
+        {/notempty}
+        <tbody>
+        {foreach $list as $key=>$vo}
+        <tr>
+            <td class='text-left nowrap'>{$vo.u_name|default=''}</td>
+            <td class='text-left nowrap'>{$vo.u_phone|default=''}</td>
+            <td class='text-left nowrap'>{$vo.price_total|default=''}</td>
+            <td class='text-left nowrap'>{$vo.level_name|default=''}</td>
+            <td class='text-left nowrap'>{$vo.month|default=''}</td>
+            <td class='text-left nowrap'>{$vo.order_no|default=''}</td>
+            <td class='text-left nowrap'>{$vo.create_at}</td>
+        </tr>
+        {/foreach}
+        </tbody>
+    </table>
+    {empty name='list'}<span class="notdata">没有记录哦</span>{else}{$pagehtml|raw|default=''}{/empty}
+</div>
+{/block}

@@ -1,0 +1,93 @@
+{extend name='admin@main'}
+{block name="content"}
+<div class="think-box-shadow">
+    {include file='store_order/index_search'}
+    <table class="layui-table margin-top-10" lay-skin="line">
+        {notempty name='list'}
+        <thead>
+        <tr>
+            <th class='text-left nowrap'>用户信息</th>
+            <th class='text-left nowrap'>订单详情</th>
+            <th class='text-left nowrap'>物流信息</th>
+            <th class='text-left nowrap'>商品详情</th>
+            <th class="text-left nowrap">操作</th>
+        </tr>
+        </thead>
+        {/notempty}
+        <tbody>
+        {foreach $list as $key=>$vo}
+        <tr>
+            <td class="text-left nowrap relative">
+                <img data-tips-image style="width:60px;height:60px" src="{$vo.headimg|default=''}" class="margin-right-5 text-top">
+                <div class="inline-block">
+                    会员ID：{$vo.user_id|default='--'}<br>
+                    会员昵称：{$vo.name|default='--'}<br>
+                    会员手机：{$vo.user_phone|default='--'}<br>
+                </div>
+            </td>
+            <td class='text-left nowrap'>
+                订单单号：<span class="color-blue">{$vo.order_no|default=''}</span>
+                {eq name='vo.status' value='0'}<span class="layui-badge layui-bg-orange margin-left-5">待付款</span>{/eq}
+                {eq name='vo.status' value='1'}<span class="layui-badge layui-bg-black margin-left-5">待发货</span>{/eq}
+                {eq name='vo.status' value='2'}<span class="layui-badge layui-bg-green margin-left-5">已发货</span>{/eq}
+                {eq name='vo.status' value='3'}<span class="layui-badge layui-bg-blue margin-left-5">已收货待评价</span>{/eq}
+                {eq name='vo.status' value='4'}<span class="layui-badge layui-bg-blue margin-left-5">已完成</span>{/eq}
+                {eq name='vo.status' value='9'}<span class="layui-badge layui-bg-blue margin-left-5">已取消</span>{/eq}
+                <br>
+                退款状态：<span class="color-blue"></span>
+                {eq name='vo.refund_state' value='0'}
+                <span class="layui-badge layui-bg-blue margin-left-5">未申请</span>
+                {/eq}
+                {eq name='vo.refund_state' value='1'}
+                     <span class="layui-badge layui-bg-blue margin-left-5">待审核</span>
+                {/eq}
+                {eq name='vo.refund_state' value='2'}
+                    <span class="layui-badge layui-bg-blue margin-left-5">审核通过</span>
+                {/eq}
+                {eq name='vo.refund_state' value='3'}
+                    <span class="layui-badge layui-bg-blue margin-left-5">拒绝退款</span>
+                {/eq}
+                <br>
+                订单金额：<strong class="color-blue">{$vo.price_total}</strong> 元<br>
+                支付方式：<span class="layui-bg-green layui-badge">{if $vo.pay_state}{$all_pay_type[$vo.pay_type]}{else}待支付{/if}</span><br>
+                下单时间：{$vo.create_at|default='--'}<br>
+                支付时间：{$vo.pay_at|default='--'}<br>
+            </td>
+            <td class="text-left nowrap">
+                收货信息：{$vo.user_name|default='--'}<span class="margin-left-5 color-blue">{$vo.phone}</span><br>
+                收货地区：{$vo.pro_name|default='--'}{$vo.city_name}{$vo.county_name}<br>
+                收货地址：{$vo.street_name}{$vo.add_detail}{$vo.add_detail}<br>
+                发货状态：
+                {eq name='vo.express_state' value='0'}
+                    <span class="layui-badge layui-bg-black">未发货</span>
+                {else}
+                    <span class="layui-badge layui-bg-blue">{$vo.express_company_title|default='--'}</span>
+                    <span class="layui-badge layui-bg-gray margin-left-5">{$vo.express_send_no|default='--'}</span>
+                {/eq}
+
+                {if $vo.status eq 1}
+                 <a class=" margin-left-5" data-title="填写订单信息" data-modal="{:url('express')}?id={$vo.id}">填写发货信息</a>
+                {elseif $vo.status eq 2}
+                    <a class=" margin-left-5" data-title="修改发货信息" data-modal="{:url('express')}?id={$vo.id}">修改发货信息</a>
+                {/if}
+                <br>
+                发货时间：{$vo.express_send_at|format_datetime}<br>
+            </td>
+            <td class="text-left nowrap">
+                {foreach $vo.item_list as $g}
+                <div class="nowrap">
+                    <p class="text-left">{$g.name|default=''}({$g.goods_spec})</p>
+                    <p class="text-left color-desc">售价 {$g.sell_price} 元 &nbsp; 数量 {$g.num|default=0}</p>
+                </div>
+                {/foreach}
+            </td>
+            <td class='text-left nowrap'>
+                <a data-title="查看详情" class="layui-btn layui-btn-sm" data-modal='{:url("detail")}?id={$vo.id}'>查看详情</a>
+            </td>
+        </tr>
+        {/foreach}
+        </tbody>
+    </table>
+    {empty name='list'}<span class="notdata">没有记录哦</span>{else}{$pagehtml|raw|default=''}{/empty}
+</div>
+{/block}

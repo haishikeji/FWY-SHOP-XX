@@ -1,0 +1,63 @@
+{extend name='admin@main'}
+
+{block name="button"}
+<button data-modal='{:url("add")}' data-title="添加" class='layui-btn layui-btn-sm layui-btn-primary'>添加</button>
+{/block}
+
+{block name="content"}
+<div class="think-box-shadow">
+    <table class="layui-table margin-top-20" lay-skin="line">
+        <thead>
+        <tr>
+            <th class='text-left nowrap' style="width: 25%">分类名称</th>
+            <th class='text-left nowrap' style="width: 25%">状态</th>
+            <th class="text-left nowrap" style="width: 25%">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {foreach $list as $key=>$vo}
+        <tr>
+            <td class='text-left nowrap'>{$vo.title|default=''}</td>
+            <td class='text-left nowrap'>{$vo.status == 1 ?'已启用' :'已禁用'}</td>
+            <td class='text-left' >
+                <a data-title="编辑" class="layui-btn layui-btn-sm" data-modal='{:url("edit")}?id={$vo.id}'>编 辑</a>
+                {if $vo.status == 1}
+                <span class="layui-btn layui-btn-sm layui-btn-warm"  onclick="btn_confirm('禁用','forbidden','{$vo.id}');" >禁 用</span>
+                {else}
+                <span class="layui-btn layui-btn-sm layui-btn-sm"  onclick="btn_confirm('启用','enable','{$vo.id}');">启 用</span>
+                {/if}
+                <span class="layui-btn layui-btn-sm layui-btn-danger" onclick="btn_confirm('删除','del','{$vo.id}');">删 除</span>
+            </td>
+        </tr>
+        {/foreach}
+        </tbody>
+    </table>
+
+    {empty name='list'}<span class="notdata">没有记录哦</span>{else}{$pagehtml|raw|default=''}{/empty}
+</div>
+<script>
+    function btn_confirm(msg,fun,id) {
+        layer.confirm('请确定是否'+msg, {btn: ['确定', '取消'], title: "提示"}, function () {
+            var url = "/mall/wash_cate/"+fun;
+            layer.closeAll();
+            $.ajax({
+                type: "post",
+                url: url,
+                data: {id:id},
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    layer.msg(data.info);
+                    setTimeout(function () {
+                        window.location.reload();
+                    },1000)
+                }
+            });
+        });
+    }
+
+</script>
+{/block}
+
+
+

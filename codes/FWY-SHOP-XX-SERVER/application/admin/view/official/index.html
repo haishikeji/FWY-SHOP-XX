@@ -1,0 +1,33 @@
+{extend name="admin@main"}
+
+{block name="content"}
+
+<div class="layui-tab layui-tab-card think-bg-white">
+    <ul class="layui-tab-title notselect">
+        <li data-type="store-config-type-sms1">配置信息</li>
+        <li data-type="store-config-type-sms2">使用协议</li>
+        <li data-type="store-config-type-sms2">首页公告</li>
+        <li data-type="store-config-type-sms2">商城公告</li>
+    </ul>
+    <div class="layui-tab-content">
+        <div class="layui-tab-item">{include file='official/platform-set'}</div>
+        <div class="layui-tab-item">{include file='official/index-agreement'}</div>
+        <div class="layui-tab-item">{include file='official/index-notice'}</div>
+        <div class="layui-tab-item">{include file='official/index-mall-notice'}</div>
+
+    </div>
+</div>
+
+<script>
+    (function (storage) {
+        (function (type, $default, $checked) {
+            $default = $('.layui-tab ul.layui-tab-title li:first');
+            $checked = $('.layui-tab ul.layui-tab-title li[data-type="' + type + '"]');
+            ($checked.length > 0 ? $checked : $default).trigger('click');
+        })(layui.data(storage)['type'] || '');
+        $('.layui-tab ul.layui-tab-title li[data-type]').on('click', function () {
+            layui.data(storage, {key: 'type', value: this.getAttribute('data-type')});
+        });
+    })('store-config-type');
+</script>
+{/block}

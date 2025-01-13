@@ -1,0 +1,69 @@
+{extend name='admin@main'}
+{block name="content"}
+<div class="think-box-shadow">
+    {include file='comment/index_search'}
+    <table class="layui-table margin-top-10" lay-skin="line">
+        {notempty name='list'}
+        <thead>
+        <tr>
+            <th class='text-left nowrap'>会员</th>
+            <th class='text-left nowrap'>商品</th>
+            <th class='text-left nowrap'>内容</th>
+            <th class='text-left nowrap'>图片</th>
+            <th class='text-left nowrap'>评分</th>
+            <th class='text-left nowrap'>时间</th>
+            <th class='text-left nowrap'>操作</th>
+        </tr>
+        </thead>
+        {/notempty}
+        <tbody>
+        {foreach $list as $key=>$vo}
+        <tr>
+            <td class="text-left nowrap relative">
+                {notempty name='vo.headimg'}
+                <img data-tips-image style="width:40px;height:40px" src="{$vo.headimg|default=''}" class="margin-right-5 text-top">
+                {/notempty}
+                <div class="inline-block">
+                    会员ID：{$vo.user_id|default='--'}<br>
+                    会员名称：{$vo.user_name|default='--'}
+                </div>
+            </td>
+
+            <td class="text-left nowrap relative">
+                {notempty name='vo.cover'}
+                <img data-tips-image style="width:40px;height:40px" src="{$vo.cover|default=''}" class="margin-right-5 text-top">
+                {/notempty}
+                <div class="inline-block">
+                    商品ID：{$vo.goods_id|default='--'}<br>
+                    商品名称：{$vo.goods_name|default='--'}
+                </div>
+            </td>
+
+            <td class='text-left nowrap'>{$vo.content|default=''}</td>
+            <td class='text-left nowrap'>
+                {if $vo['images']}
+                    {foreach :explode(',',$vo['images']) as $v}
+                        <img data-tips-image style="width:40px;height:40px" src="{$v|default=''}" class="margin-right-5 text-top">
+                    {/foreach}
+                {else}
+                ----
+                {/if}
+            </td>
+            <td class='text-left nowrap'>
+                <div class="inline-block">
+                    物流评分：{$vo.wl_core|default='--'}<br>
+                    服务评分：{$vo.serve_core|default='--'}<br>
+                    商品描述：{$vo.goods_core|default='--'}
+                </div>
+            </td>
+            <td class='text-left nowrap'>{$vo.create_at|default=''}</td>
+            <td class='text-left nowrap'>
+                <a class="layui-btn layui-btn-sm layui-btn-danger" data-action="{:url('del')}" data-value="id#{$vo.id}">删除</a>
+            </td>
+        </tr>
+        {/foreach}
+        </tbody>
+    </table>
+    {empty name='list'}<span class="notdata">没有记录哦</span>{else}{$pagehtml|raw|default=''}{/empty}
+</div>
+{/block}

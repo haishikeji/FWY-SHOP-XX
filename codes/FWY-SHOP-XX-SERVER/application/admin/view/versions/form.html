@@ -1,0 +1,33 @@
+<form onsubmit="return false;" action="{:request()->url()}" data-auto="true" method="post" class='layui-form layui-card' autocomplete="off">
+
+    <div class="layui-card-body">
+
+
+        <div class="layui-row margin-bottom-15">
+            <label class="layui-form-label label-required">版本號</label>
+            <div class="layui-input-block">
+                <input name="title" required value='{$vo.title|default=""}' placeholder="請輸入版本號" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-row margin-bottom-15">
+            <label class="layui-form-label label-required">修改內容</label>
+            <div class="layui-input-block">
+                <textarea name="content">{$vo.content|default=''|raw}</textarea>
+            </div>
+        </div>
+    </div>
+
+    <div class="hr-line-dashed"></div>
+    <div class="layui-form-item text-center">
+        {notempty name='vo.id'}<input type='hidden' value='{$vo.id}' name='id'>{/notempty}
+        <button class="layui-btn" type='submit'>保存數據</button>
+        <button class="layui-btn layui-btn-danger" type='button' data-confirm="確定要取消編輯嗎？" data-close>取消編輯</button>
+    </div>
+    <script>
+        window.form.render();
+        require(['ckeditor', 'angular'], function () {
+            window.createEditor('[name="content"]', {height: 260});
+        })
+    </script>
+</form>

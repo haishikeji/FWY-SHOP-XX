@@ -1,0 +1,53 @@
+<form onsubmit="return false;" data-auto="true" action="{:url('save')}" method="post" class='layui-form layui-card' autocomplete="off">
+
+    <div class="layui-card-body padding-40">
+
+        <label class="layui-form-item block relative">
+            <span class="color-green margin-right-10">店铺名称</span><span class="nowrap color-desc">AppName</span>
+            <input name="app_name"   required placeholder="请输入店铺名称" value="{:sysconf('app_name')}" class="layui-input">
+        </label>
+
+        <div class="layui-form-item">
+            <span class="color-green margin-right-10">店铺LOGO</span><span class="nowrap color-desc">AppLogo</span>
+            <div class="layui-input-line">
+                <input name="app_logo" type="hidden"    value="{:sysconf('app_logo')}">
+            </div>
+        </div>
+
+        <label class="layui-form-item block relative">
+            <span class="color-green margin-right-10">店铺地址</span><span class="nowrap color-desc">AppAddress</span>
+            <input name="app_address"   required placeholder="请输入店铺地址" value="{:sysconf('app_address')}" class="layui-input">
+        </label>
+
+
+        <label class="layui-form-item block relative">
+            <span class="color-green margin-right-10">联系电话</span><span class="nowrap color-desc">ServicePhone</span>
+            <input name="service_phone"   required placeholder="请输入客服电话" value="{:sysconf('service_phone')}" class="layui-input">
+        </label>
+
+        <label class="layui-form-item block relative">
+            <span class="color-green margin-right-10">邮箱地址</span><span class="nowrap color-desc">ServiceEmail</span>
+            <input name="service_email"   required placeholder="请输入邮箱地址" value="{:sysconf('service_email')}" class="layui-input">
+        </label>
+
+        <div class="layui-form-item text-center margin-top-20">
+            <button class="layui-btn" type="submit">保存配置</button>
+        </div>
+    </div>
+</form>
+<script>
+    layui.use('laydate', function(){
+        var laydate = layui.laydate;
+        //时间选择器
+        laydate.render({
+            elem: '#start_time_cost'
+            ,type: 'time'
+        });
+        laydate.render({
+            elem: '#end_time_cost'
+            ,type: 'time'
+        });
+    })
+    $('[name="service_qr_code"]').uploadOneImage();
+    $('[name="app_logo"]').uploadOneImage();
+</script>
